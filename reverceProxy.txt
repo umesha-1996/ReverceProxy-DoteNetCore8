@@ -1,0 +1,51 @@
+dotnet new sln -n F1Shop
+
+dotnet new webapi -n MainApi --framework net8.0
+dotnet new webapi -n UserApi --framework net8.0
+dotnet new webapi -n PaymentApi --framework net8.0
+dotnet new webapi -n OrderApi --framework net8.0
+
+dotnet sln add PaymentApi/PaymentApi.csproj
+dotnet sln add OrderApi/OrderApi.csproj
+
+
+reverce proxy site
+https://microsoft.github.io/reverse-proxy/articles/getting-started.html
+
+add pacckj : Yarp.ReverseProxy to main project
+
+
+add program.cs
+builder.Services.AddReverseProxy();
+app.MapReverseProxy();
+
+
+add appsetting
+ "AllowedHosts": "*",
+ "ReverseProxy": {
+   "Routes": {
+     "orderRoute": {
+       "ClusterId": "orders",
+       "Match": {
+         "Path": "/orders/{**catch-all}"
+       },
+       "Transforms": [
+         { "PathPattern": "{**catch-all}" }
+       ]
+     }
+   },
+   "Clusters": {
+     "orders": {
+       "Destinations": {
+         "destination1": {
+           "Address": "http://localhost:5205"
+         }
+       }
+     }
+   }
+ }
+
+
+
+
+
